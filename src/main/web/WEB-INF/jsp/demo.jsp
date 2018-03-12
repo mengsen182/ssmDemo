@@ -30,5 +30,6 @@
     </script>
 <body>
     <table id="dg"></table>
+        测试
 </body>
 </html>
