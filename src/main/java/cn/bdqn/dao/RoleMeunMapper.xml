@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.bdqn.dao.RoleMeunMapper">
+        <resultMap id="meunMap" type="Menu">
+            <id property="id" column="m_id"/>
+            <result property="menuName" column="menu_name"/>
+            <result property="parentId" column="parent_id"/>
+            <result property="menuUrl" column="url"/>
+        </resultMap>
+        <select id="queryMenuByRole" resultMap="meunMap">
+             SELECT
+        m.id m_id,
+        m.menu_name ,m.menu_url,
+        m.parent_id
+        FROM
+        role_menu rm,tmenu m
+        WHERE
+        rm.menu_id=m.id
+        AND
+        rm.role_id=#{roleId}
+        AND
+        m.parent_id=#{parentId}
+        </select>
+
+
+</mapper>

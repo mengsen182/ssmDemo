@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.bdqn.dao.ScoreMapper">
+    <resultMap id="scoreMap" type="Score">
+        <id property="id" column="sc_id"/>
+        <result property="score" column="score"/>
+        <association property="student" resultMap="studentMap"></association>
+        <association property="course" resultMap="courseMap"/>
+    </resultMap>
+    <resultMap id="gradeMap" type="Grade">
+        <id property="id" column="gr_id"/>
+        <result property="gradeName" column="grade_name"/>
+    </resultMap>
+    <resultMap id="studentMap" type="Student">
+        <id property="id" column="st_id"/>
+        <result property="studentName" column="student_name"/>
+        <result property="studentNum" column="student_num"/>
+        <association property="grade" resultMap="gradeMap"/>
+    </resultMap>
+    <resultMap id="courseMap" type="Course">
+        <id property="id" column="c_id"/>
+        <result property="courseName" column="course_name"/>
+    </resultMap>
+
+    <select id="queryAll" resultMap="scoreMap">
+        SELECT sc.id sc_id, sc.score,st.id st_id, st.student_name,c.id c_id,c.course_name,g.id g_id,g.grade_name FROM
+        score sc,student st,course c,grade g
+        WHERE
+        sc.student_id=st.id
+        AND
+        sc.course_id=c.id
+        AND
+        st.grade_id=g.id
+        ORDER BY sc.id DESC
+    </select>
+
+    <select id="queryScore" resultMap="scoreMap">
+        SELECT
+        g.id g_id,g.grade_name,
+        st.id st_id,st.student_name,
+        co.id c_id,co.course_name,
+        sc.id sc_id,sc.score
+        FROM
+        score sc,course co,student st,grade g
+        WHERE
+        sc.course_id=co.id
+        AND
+        sc.student_id=st.id
+        AND
+        st.grade_id=g.id
+        <if test="null!=gradeId">
+            and g.id=#{gradeId}
+        </if>
+        <if test="null!=studentId">
+            and st.id=#{studentId}
+        </if>
+        order by sc.id
+
+    </select>
+    <select id="queryScoreById" resultMap="scoreMap">
+        SELECT
+        g.id g_id,g.grade_name,
+        st.id st_id,st.student_name,
+        co.id c_id,co.course_name,
+        sc.id sc_id,sc.score
+        FROM
+        score sc,course co,student st,grade g
+        WHERE
+        sc.course_id=co.id
+        AND
+        sc.student_id=st.id
+        AND
+        st.grade_id=g.id
+        AND sc.id=#{id}
+    </select>
+    <delete id="deleteScoreById" parameterType="integer">
+        delete FROM score where id=#{id}
+    </delete>
+    <insert id="addScore" parameterType="Score">
+        insert into score VALUES (null,#{student.id},#{course.id},#{score})
+    </insert>
+    <update id="updateScore" parameterType="Score">
+        update score set score=#{score} where id=#{id}
+    </update>
+</mapper>

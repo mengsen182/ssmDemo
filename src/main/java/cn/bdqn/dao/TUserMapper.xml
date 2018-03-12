@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.bdqn.dao.TUserMapper">
+
+    <resultMap id="userMap" type="cn.bdqn.entity.TUser">
+        <id property="id" column="id"/>
+        <result property="userName" column="user_name"/>
+        <result property="nickName" column="nick_name"/>
+
+    </resultMap>
+<select id="login" resultMap="userMap">
+select * from t_user where user_name=#{userName} and password=#{password}
+</select>
+
+</mapper>

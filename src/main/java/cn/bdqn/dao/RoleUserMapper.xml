@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.bdqn.dao.RoleUserMapper">
+    <resultMap id="userMap" type="TUser">
+        <id property="id" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="password" column="password"/>
+    </resultMap>
+    <resultMap id="roleMap" type="Role">
+        <id property="id" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+    </resultMap>
+    <resultMap id="roleUserMap" type="RoleUser">
+        <id property="id" column="id"/>
+        <association property="role" resultMap="roleMap"/>
+        <association property="tUser" resultMap="userMap"/>
+    </resultMap>
+    <select id="queryRoleUserByUserNameAndPassword" resultMap="roleUserMap">
+         SELECT
+        ru.role_id,u.nick_name
+        FROM role_user ru ,t_user u
+        WHERE
+        u.id=ru.user_id
+        AND
+        u.user_name=#{userName}
+        AND
+        u.password=#{password}
+    </select>
+
+
+
+</mapper>

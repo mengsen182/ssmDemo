@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.bdqn.dao.StudentMapper">
+    
+    <resultMap id="studentMap" type="Student">
+        <id property="id" column="id"></id>
+        <result property="studentName" column="student_name"/>
+        <result property="studentNum" column="student_num"/>
+        <result property="age" column="age"></result>
+        <result property="gender" column="gender"></result>
+        <association property="grade" javaType="Grade" resultMap="gradeMap"></association>
+    </resultMap>
+    
+    <resultMap id="gradeMap" type="Grade">
+        <id property="id" column="g_id"></id>
+        <result property="gradeName" column="grade_name"></result>
+    </resultMap>
+
+    <select id="queryAll" resultMap="studentMap">
+        SELECT s.id,s.student_name,s.age,s.student_num,
+        s.gender,g.id g_id,g.grade_name
+        FROM student s,grade g
+        WHERE
+        s.grade_id=g.id
+        ORDER BY s.id desc
+    </select>
+
+    <delete id="deleteStudentByIds">
+        delete from student where id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="addStudent" parameterType="Student">
+        INSERT INTO student
+        VALUES(NULL,#{grade.id},#{studentName},#{gender},#{age},#{studentNum});
+    </insert>
+
+    <select id="queryStudentById" parameterType="Integer" resultMap="studentMap">
+        SELECT s.id,s.student_name,s.age,s.student_num,
+        s.gender,g.id g_id,g.grade_name
+        FROM student s,grade g
+        WHERE
+        s.grade_id=g.id
+        and s.id=#{id}
+    </select>
+
+    <update id="updateStudent" parameterType="Student">
+        UPDATE student
+        SET grade_id=#{grade.id},student_name=#{studentName},gender=#{gender},age=#{age}
+        WHERE
+        id=#{id}
+    </update>
+
+    <delete id="deleteStudentByGradeId" parameterType="Integer">
+        delete from student where grade_id=#{gradeId}
+    </delete>
+
+    <select id="queryStudentByGradeId" parameterType="integer" resultMap="studentMap">
+        SELECT * from student where grade_id=#{gradeId}
+    </select>
+</mapper>
